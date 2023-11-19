@@ -1,5 +1,5 @@
 bh_dec2asc() {
-    (( $# < 1 )) && return 1
-
-    echo -e $(printf "\\\x%x" $1)
+	for c; do
+		printf '\x'"$(printf %x "$c")"'\n'
+	done
 }
