@@ -1,4 +1,7 @@
-bh_urldecode() {
-	(( $# < 1 )) && return 1
-	echo "$1" | perl -pe 's/%([0-9a-f]{2})/pack "H*", $1/gie'
+bh_urldecode () {
+	local url_encoded
+	for url_encoded; do
+		url_encoded="${url_encoded//+/ }"
+		printf %b "${url_encoded//%/\\x}"
+	done
 }
