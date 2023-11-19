@@ -1,5 +1,8 @@
-bh_dec2bin() {
-    (( $# < 1 )) && return 1
-    
-    echo "obase=2;$1" | bc
+bh_dec2bin () {
+	local n="$1" o
+	while ((n>0)); do
+		o="$(( n % 2 ))$o"
+		(( n /= 2 ))
+	done
+	printf '%s\n' "$o"
 }
