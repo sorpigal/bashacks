@@ -1,17 +1,15 @@
 bh_hex2str() {
-	(( $# < 1 )) && return 1
-	
-	local hex
-	local i
-	
-	# remove non-hexa characters
-	hex=$(echo "$1" | bh_cmd_sed_ext 's/(0x|\\x| |\{|\||\}|,)//g')
+	local c i
+	for c; do
+		# strings may start with literal 0x or \x
+		c=${c#0x}
+		c=${c#'\x'}
+		c=${c##* }
 
-	# insert space every two characters
-	hex=$(echo "$hex" | bh_cmd_sed_ext 's/../& /g')
-	
-	for i in $hex; do
-		echo -ne "\\x$i"
+		for ((i=0; i<${#c}; i+=2)); do
+			printf "\\x${c:i:2}"
+		done
+
+		printf '\n'
 	done
-	echo
 }
