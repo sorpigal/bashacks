@@ -1,12 +1,13 @@
-bh_hex2bin() {
-    (( $# < 1 )) && return 1
-
-	local bin
-	local i
-
-	for i in $*; do
-		bin=$(echo "obase=2;ibase=16;$(echo $i | tr a-f A-F)" | bc)
-		echo -n "$bin "
-    done
-	echo
+bh_hex2bin () {
+	local n o l=()
+	for n; do
+		o=
+		while ((16#$n > 0)); do
+			o="$(( 16#$n % 2 ))$o"
+			n=$(( 16#$n / 2 ))
+			n=$(printf %x "$n")
+		done
+		l+=("$o")
+	done
+	printf '%s\n' "${l[*]}"
 }
