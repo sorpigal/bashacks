@@ -1,15 +1,21 @@
-bh_rot() {
-	(( $# < 2 )) && return 1
+bh_rot () {
+	local i chr ord rot="$1" s o
+	shift
+	for s; do
+		for ((i=0; i < ${#s}; i++)); do
+			chr="${s:i:1}"
+			printf -v ord %d \'"$chr"
 
-	local n
-	local N
+			o=
+			((ord>64)) && o=0
+			((ord>90)) && o=
+			((ord>96)) && o=32
+			((ord>122)) && o=
+			[[ -z $o ]] && { printf %s "$chr"; continue; }
 
-	# n receives the correspondent alphabet letter
-	n=$(echo -e \\x$(bh_dec2hex $(( 97 + $1 )) ) )
-
-	# bash idiom to turn our text in uppercase letters
-	N="${n^^}"
-
-	# rot with tr command
-	echo $2 | tr a-z $n-za-z | tr A-Z $N-ZA-Z
+			((ord=65+o+((ord-(65+o)+rot)%26)))
+			printf '\x'"$(printf %x "$ord")"
+		done
+		printf '\n'
+	done
 }
