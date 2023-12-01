@@ -1,23 +1,48 @@
-bh_str2hex() {
-	(( $# < 1 )) && return 1
+bh_str2hex () {
+	(( $# )) || return 1
 
-	case $1 in
-		-x)
-			printf %s "$2" | hexdump -ve '/1 "%02x"' | sed 's/../\\x&/g'
-			printf '\n'
-		;;
-		-0x)
-			printf %s "$2" | hexdump -ve '/1 "0x%02x "' | sed 's/\(.*\) /\1/'
-			printf '\n'
-		;;
-		-c)
-			printf '{ '
-			printf %s "$2" | hexdump -ve '/1 "0x%02x, "' | sed 's/\(.*\), /\1/'
-			printf ' }\n'
-		;;
-		*)
-			printf %s "$1" | hexdump -ve '/1 "%02x "' | sed 's/\(.*\) /\1/'
-			printf '\n'
-		;;
-	esac
+	local i c o h l m s
+
+	while (( $# )); do
+		case $1 in
+			-x)
+				m=x
+			;;
+			-0x)
+				m=0x
+			;;
+			-c)
+				m=c
+			;;
+			*)
+				l=()
+				for ((i=0;i<${#1};i++)); do
+					c=${1:i:1}
+					printf -v o %d "${c/#/\'}"
+					printf -v h %x "$o"
+					l+=("$h")
+				done
+
+				case $m in
+					x)
+						printf '\\x%s' "${l[@]}"
+						printf '\n'
+					;;
+					0x)
+						l=("${l[@]/#/0x}")
+						printf '%s\n' "${l[*]}"
+					;;
+					c)
+						l=("${l[@]/#/0x}")
+						printf -v s ', %s' "${l[@]}"
+						printf '{ %s }\n' "${s:2}"
+					;;
+					*)
+						printf '%s\n' "${l[*]}"
+					;;
+				esac
+			;;
+		esac
+		shift
+	done
 }
