@@ -3,21 +3,21 @@ bh_str2hex() {
 
 	case $1 in
 		-x)
-			echo -n "$2" | hexdump -ve '/1 "%02x"' | sed 's/../\\x&/g'
-			echo
+			printf %s "$2" | hexdump -ve '/1 "%02x"' | sed 's/../\\x&/g'
+			printf '\n'
 		;;
 		-0x)
-			echo -n "$2" | hexdump -ve '/1 "0x%02x "' | sed 's/\(.*\) /\1/'
-			echo
+			printf %s "$2" | hexdump -ve '/1 "0x%02x "' | sed 's/\(.*\) /\1/'
+			printf '\n'
 		;;
 		-c)
-			echo -n '{ '
-			echo -n "$2" | hexdump -ve '/1 "0x%02x, "' | sed 's/\(.*\), /\1/'
-			echo ' }'
+			printf '{ '
+			printf %s "$2" | hexdump -ve '/1 "0x%02x, "' | sed 's/\(.*\), /\1/'
+			printf ' }\n'
 		;;
 		*)
-			echo -n "$1" | hexdump -ve '/1 "%02x "' | sed 's/\(.*\) /\1/'
-			echo
+			printf %s "$1" | hexdump -ve '/1 "%02x "' | sed 's/\(.*\) /\1/'
+			printf '\n'
 		;;
 	esac
 }
