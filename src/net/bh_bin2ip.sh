@@ -3,5 +3,5 @@ bh_bin2ip() {
 
 	local a b c d
 	IFS=. read -r a b c d <<< "$1"
-	echo $((2#$a)).$((2#$b)).$((2#$c)).$((2#$d))
+	printf '%s.%s.%s.%s\n' "$((2#$a))" "$((2#$b))" "$((2#$c))" "$((2#$d))"
 }
